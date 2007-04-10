@@ -211,6 +211,9 @@ int main(int argc, char **argv)
 	tcflush(serial_port, TCIFLUSH);
 	tcsetattr(serial_port, TCSANOW, &serial_opts);
 
+	/* Make stdin non-blocking. */
+	fcntl(fileno(stdin), F_SETFL, O_NONBLOCK);
+
 	/* Processing loop. */
 	while(1)
 	{
@@ -469,6 +472,12 @@ int main(int argc, char **argv)
 				program_state = BYTE1;
 				break;
 		}
+
+		/* If key was pressed, bail out. */
+/*
+		if(getchar() == EOF)
+			break;
+*/
 	}
 
 	/* Close serial port. */
