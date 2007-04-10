@@ -72,7 +72,6 @@ digitek_screen;
 /* State of data received. */
 typedef enum
 {
-	NONE,
 	BYTE1,
 	BYTE2,
 	BYTE3,

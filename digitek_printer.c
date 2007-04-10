@@ -14,7 +14,7 @@
 
 /* Program processing variables. */
 digitek_screen screen;
-digitek_state program_state = NONE;
+digitek_state program_state = BYTE1;
 /* System variables. */
 int serial_port;
 struct termios serial_opts;
@@ -66,9 +66,6 @@ int main(int argc, char **argv)
 		/* Process the read character. */
 		switch(program_state)
 		{
-			case NONE:
-				break;
-
 			case BYTE1:
 				if((serial_input >> 4) == 1)
 				{
