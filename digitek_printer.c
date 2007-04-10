@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 	serial_opts.c_cc[VTIME] = 20;	/* Time-out after 2 seconds. */
 
 	/* Open serial terminal. */
-	serial_port = open(argv[1], O_RDONLY | O_NONBLOCK | O_NOCTTY);
+	serial_port = open(argv[1], O_RDONLY | O_NOCTTY);
 	if(serial_port == -1)		/* Handle error. */
 	{
 		fprintf(stderr, "Could not open serial tty %s\n", argv[1]);
