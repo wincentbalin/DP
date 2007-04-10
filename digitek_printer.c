@@ -212,7 +212,7 @@ int main(int argc, char **argv)
 	tcsetattr(serial_port, TCSANOW, &serial_opts);
 
 	/* Make stdin non-blocking. */
-	fcntl(fileno(stdin), F_SETFL, O_NONBLOCK);
+	fcntl(fileno(stdin), F_SETFL, fcntl(fileno(stdin),F_GETFL)|O_NONBLOCK);
 
 	/* Processing loop. */
 	while(1)
@@ -474,10 +474,8 @@ int main(int argc, char **argv)
 		}
 
 		/* If key was pressed, bail out. */
-/*
-		if(getchar() == EOF)
+		if(getchar() > 0)
 			break;
-*/
 	}
 
 	/* Close serial port. */
