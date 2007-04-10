@@ -85,8 +85,7 @@ typedef enum
 	BYTE11,
 	BYTE12,
 	BYTE13,
-	BYTE14,
-	COMPLETE
+	BYTE14
 }
 digitek_state;
 
