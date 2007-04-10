@@ -2,8 +2,8 @@
 # Makefile for DIgitek MT-9062 multimeter utility.
 #
 
-#CFLAGS_OPT = -O3 
-CFLAGS_DEBUG = -ggdb -g3 -Wall
+CFLAGS_OPT = -O3 -s 
+#CFLAGS_DEBUG = -ggdb -g3 -Wall
 CFLAGS = $(CFLAGS_DEBUG) $(CFLAGS_OPT) -pipe
 
 digitek_printer:	digitek_printer.c digitek_printer.h
