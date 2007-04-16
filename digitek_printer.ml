@@ -80,5 +80,9 @@ type digitek_screen = {	rs232	: bool;
 
 
 (* Main function. *)
+let main () =
+	exit ();;
+
+main();;
 
 
