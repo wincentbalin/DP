@@ -159,8 +159,8 @@ let rec print_loop port state =
   let next_state = process_data buf state in  (* And process it. *)
   match next_state with
     | EXIT -> () 
-    | _ -> print_loop port next_state ;    (* Tail recursion. *)
-  () ;;
+    | _ -> print_loop port next_state ;;    (* Tail recursion. *)
+
 
 (* Main function. *)
 let main () =
