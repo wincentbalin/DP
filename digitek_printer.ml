@@ -75,7 +75,7 @@ let print_period sb =
 
 
 (* Prints acquired data on screen. *)
-let print_data =
+let print_data () =
   (* Print sign if it is there. *)
   let sign_bit = Hashtbl.find screen SIGN in
   let sign = if sign_bit = 1 then '-' else ' ' in
@@ -264,7 +264,7 @@ let process_data data_byte state =
     | BYTE14 when byte_number = 14 ->
       store_bit_in_segment data 1 HFE;
       store_bit_in_segment data 2 CELSIUS;
-      print_data;
+      print_data ();
       BYTE1
     | _ -> BYTE1 ;;
 
