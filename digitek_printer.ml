@@ -299,10 +299,19 @@ let main () =
     )
     else
     (
-      let port =
-        Unix.openfile Sys.argv.(1) [Unix.O_RDONLY; Unix.O_NOCTTY] 0o666 in
-        print_loop port BYTE1 ;
-      Unix.close port
+      try
+      (
+        (* Prepare polling on standard input. *)
+        Unix.set_nonblock (Unix.descr_of_in_channel stdin) ;
+        (* Open file and process data. *)
+        let port =
+          Unix.openfile Sys.argv.(1) [Unix.O_RDONLY; Unix.O_NOCTTY] 0o666 in
+          print_loop port BYTE1 ;
+        Unix.close port
+      )
+      (* Redo functionality of Unix.handle_unix_error. *)
+      with Unix.Unix_error (e, fm, argm) ->
+        prerr_endline ((Unix.error_message e) ^ " " ^ fm ^ " " ^ argm)
     ) ;;
 
 
