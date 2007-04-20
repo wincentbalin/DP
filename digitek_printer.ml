@@ -269,11 +269,21 @@ let process_data data_byte state =
     | _ -> BYTE1 ;;
 
 
+(* If a key pressed, cancel program. *)
+let cancel_on_key state =
+  let buf = " " in
+  let read_chars = Unix.read (Unix.descr_of_in_channel stdin) buf 0 1 in
+  match read_chars with
+    | 1 -> EXIT
+    | _ -> state ;;
+
+
 (* Loop which reads data from serial port and prints. *)
 let rec print_loop port state =
   let buf = " " in
   let _ = Unix.read port buf 0 1 in    (* Read one character. *)
   let next_state = process_data buf state in  (* And process it. *)
+  let next_state = cancel_on_key next_state in (* If a key pressed, exit. *)
   match next_state with
     | EXIT -> () 
     | _ -> print_loop port next_state ;;    (* Tail recursion. *)
