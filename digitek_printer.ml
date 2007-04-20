@@ -38,18 +38,18 @@ let screen = Hashtbl.create 54;;
 (* Convert segments to a digit. *)
 let segments_to_digit s1 s2 s3 s4 s5 s6 s7 =
   match [s1; s2; s3; s4; s5; s6; s7] with
-    | [true; true; true; true; true; true; false] -> '0'
-    | [false; true; true; false; false; false; false] -> '1'
-    | [true; true; false; true; true; false; true] -> '2'
-    | [true; true; true; true; false; false; true] -> '3'
-    | [false; true; true; false; false; true; true] -> '4'
-    | [true; false; true; true; false; true; true] -> '5'
-    | [true; false; true; true; true; true; true] -> '6'
-    | [true; true; true; false; false; false; false] -> '7'
-    | [true; true; true; true; true; true; true] -> '8'
-    | [true; true; true; true; false; true; true] -> '9'
-    | [false; false; false; true; true; true; true] -> 'L'
-    | [false; false; false; false; false; false; false] -> ' '
+    | [1; 1; 1; 1; 1; 1; 0] -> '0'
+    | [0; 1; 1; 0; 0; 0; 0] -> '1'
+    | [1; 1; 0; 1; 1; 0; 1] -> '2'
+    | [1; 1; 1; 1; 0; 0; 1] -> '3'
+    | [0; 1; 1; 0; 0; 1; 1] -> '4'
+    | [1; 0; 1; 1; 0; 1; 1] -> '5'
+    | [1; 0; 1; 1; 1; 1; 1] -> '6'
+    | [1; 1; 1; 0; 0; 0; 0] -> '7'
+    | [1; 1; 1; 1; 1; 1; 1] -> '8'
+    | [1; 1; 1; 1; 0; 1; 1] -> '9'
+    | [0; 0; 0; 1; 1; 1; 1] -> 'L'
+    | [0; 0; 0; 0; 0; 0; 0] -> ' '
     | _ -> 'X' ;;
 
 
