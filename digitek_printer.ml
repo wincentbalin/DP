@@ -170,7 +170,8 @@ let main () =
     )
     else
     (
-      let port = Unix.openfile Sys.argv.(1) [Unix.O_RDONLY; Unix.O_NOCTTY] 0o666 in
+      let port =
+        Unix.openfile Sys.argv.(1) [Unix.O_RDONLY; Unix.O_NOCTTY] 0o666 in
         print_loop port BYTE1 ;
       Unix.close port
     ) ;;
