@@ -58,7 +58,8 @@ let print_data = ();;
 (* Store specified bit in a screen segment. *)
 let store_bit_in_segment data shift segment =
   let bit = (data lsr shift) land 1 in
-  Hashtbl.replace screen segment bit;;
+  Hashtbl.replace screen segment bit ;;
+
 
 (* Process given data and return next state. *)
 let process_data data_byte state =
@@ -150,6 +151,7 @@ let process_data data_byte state =
       BYTE1
     | _ -> BYTE1 ;;
 
+
 (* Loop which reads data from serial port and prints. *)
 let rec print_loop port state =
   let buf = " " in
@@ -175,6 +177,7 @@ let main () =
         print_loop port BYTE1 ;
       Unix.close port
     ) ;;
+
 
 main();;
 
