@@ -314,7 +314,6 @@ let main () =
         prerr_endline ((Unix.error_message e) ^ " " ^ fm ^ " " ^ argm)
     ) ;;
 
-
-main();;
+main () ;;
 
 
