@@ -26,7 +26,7 @@ type digitek_screen_segment =
   C1 | C6 | C5 | P2   | C2 | C7 | C3 | C4 |
   D1 | D6 | D5 | P3   | D2 | D7 | D3 | D4 |
   DIODE | KILO | NANO | MICRO | TON | MEGA | PERCENT | MILLI |
-  HOLD | DELTA | OHM | FARAD | BATT | HERTZ | VOLT | AMPERE | HFE | CELSIUS;;
+  HOLD | DELTA | OHM | FARAD | BATT | HERTZ | VOLT | AMPERE | HFE | CELSIUS ;;
 
 
 (* Variables. *)
