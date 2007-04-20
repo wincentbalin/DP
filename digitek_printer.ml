@@ -180,7 +180,7 @@ let store_bit_in_segment data shift segment =
 
 (* Process given data and return next state. *)
 let process_data data_byte state =
-  let data = int_of_string data_byte in
+  let data = int_of_char (String.get data_byte 0) in
   let byte_number = data lsr 4 in
   match state with
     | BYTE1 when byte_number = 1 ->
