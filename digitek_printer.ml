@@ -26,7 +26,7 @@ type digitek_screen_segment =
   C1 | C6 | C5 | P2   | C2 | C7 | C3 | C4 |
   D1 | D6 | D5 | P3   | D2 | D7 | D3 | D4 |
   DIODE | KILO | NANO | MICRO | TON | MEGA | PERCENT | MILLI |
-  HOLD | DELTA | OHM | FARAD | BATT | HZ | VOLT | AMPERE | HFE | CELSUIS;;
+  HOLD | DELTA | OHM | FARAD | BATT | HZ | VOLT | AMPERE | HFE | CELSIUS;;
 
 
 (* Variables. *)
@@ -52,6 +52,13 @@ let segments_to_digit s1 s2 s3 s4 s5 s6 s7 =
     | [0; 0; 0; 0; 0; 0; 0] -> ' '
     | _ -> 'X' ;;
 
+(* Prints acquired data on screen. *)
+let print_data = ();;
+
+(* Store specified bit in a screen segment. *)
+let store_bit_in_segment data shift segment =
+  let bit = (data lsr shift) land 1 in
+  Hashtbl.replace screen segment bit;;
 
 (* Process given data and return next state. *)
 let process_data data_byte state =
@@ -59,10 +66,88 @@ let process_data data_byte state =
   let byte_number = data lsr 4 in
   match state with
     | BYTE1 when byte_number = 1 ->
-      let rs232_bit = data land 1 in
-        Hashtbl.replace screen RS232 rs232_bit ;
-(*      let auto_bit = (data *)
+      store_bit_in_segment data 0 RS232;
+      store_bit_in_segment data 1 AUTO;
+      store_bit_in_segment data 2 DC;
+      store_bit_in_segment data 3 AC;
       BYTE2
+    | BYTE2 when byte_number = 2 ->
+      store_bit_in_segment data 0 A1;
+      store_bit_in_segment data 1 A6;
+      store_bit_in_segment data 2 A5;
+      store_bit_in_segment data 3 SIGN;
+      BYTE3
+    | BYTE3 when byte_number = 3 ->
+      store_bit_in_segment data 0 A2;
+      store_bit_in_segment data 1 A7;
+      store_bit_in_segment data 2 A3;
+      store_bit_in_segment data 3 A4;
+      BYTE4
+    | BYTE4 when byte_number = 4 ->
+      store_bit_in_segment data 0 B1;
+      store_bit_in_segment data 1 B6;
+      store_bit_in_segment data 2 B5;
+      store_bit_in_segment data 3 P1;
+      BYTE5
+    | BYTE5 when byte_number = 5 ->
+      store_bit_in_segment data 0 B2;
+      store_bit_in_segment data 1 B7;
+      store_bit_in_segment data 2 B3;
+      store_bit_in_segment data 3 B4;
+      BYTE6
+    | BYTE6 when byte_number = 6 ->
+      store_bit_in_segment data 0 C1;
+      store_bit_in_segment data 1 C6;
+      store_bit_in_segment data 2 C5;
+      store_bit_in_segment data 3 P2;
+      BYTE7
+    | BYTE7 when byte_number = 7 ->
+      store_bit_in_segment data 0 C2;
+      store_bit_in_segment data 1 C7;
+      store_bit_in_segment data 2 C3;
+      store_bit_in_segment data 3 C4;
+      BYTE8
+    | BYTE8 when byte_number = 8 ->
+      store_bit_in_segment data 0 D1;
+      store_bit_in_segment data 1 D6;
+      store_bit_in_segment data 2 D5;
+      store_bit_in_segment data 3 P3;
+      BYTE9
+    | BYTE9 when byte_number = 9 ->
+      store_bit_in_segment data 0 D2;
+      store_bit_in_segment data 1 D7;
+      store_bit_in_segment data 2 D3;
+      store_bit_in_segment data 3 D4;
+      BYTE10
+    | BYTE10 when byte_number = 10 ->
+      store_bit_in_segment data 0 DIODE;
+      store_bit_in_segment data 1 KILO;
+      store_bit_in_segment data 2 NANO;
+      store_bit_in_segment data 3 MICRO;
+      BYTE11
+    | BYTE11 when byte_number = 11 ->
+      store_bit_in_segment data 0 TON;
+      store_bit_in_segment data 1 MEGA;
+      store_bit_in_segment data 2 PERCENT;
+      store_bit_in_segment data 3 MILLI;
+      BYTE12
+    | BYTE12 when byte_number = 12 ->
+      store_bit_in_segment data 0 HOLD;
+      store_bit_in_segment data 1 DELTA;
+      store_bit_in_segment data 2 OHM;
+      store_bit_in_segment data 3 FARAD;
+      BYTE13
+    | BYTE13 when byte_number = 13 ->
+      store_bit_in_segment data 0 BATT;
+      store_bit_in_segment data 1 HZ;
+      store_bit_in_segment data 2 VOLT;
+      store_bit_in_segment data 3 AMPERE;
+      BYTE14
+    | BYTE14 when byte_number = 14 ->
+      store_bit_in_segment data 1 HFE;
+      store_bit_in_segment data 2 CELSIUS;
+      print_data;
+      BYTE1
     | _ -> BYTE1 ;;
 
 (* Loop which reads data from serial port and prints. *)
