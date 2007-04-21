@@ -274,10 +274,7 @@ let cancel_on_key state =
   let buf = " " in
   try
   (
-    (* Prepare polling on standard input. *)
-    Unix.set_nonblock Unix.stdin ;
     let read_chars = Unix.read Unix.stdin buf 0 1 in
-    Unix.clear_nonblock Unix.stdin ; 
     match read_chars with
       | 1 -> EXIT
       | _ -> state
@@ -310,6 +307,9 @@ let main () =
     (
       try
       (
+        (* Prepare polling on standard input and immediate output. *)
+        Unix.set_nonblock Unix.stdin ;
+        Unix.set_nonblock Unix.stdout ; 
         (* Open file and process data. *)
         let port =
           Unix.openfile Sys.argv.(1) [Unix.O_RDONLY; Unix.O_NOCTTY] 0o666 in
