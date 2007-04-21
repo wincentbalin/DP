@@ -7,7 +7,7 @@ CFLAGS_OPT = -O3 -s
 CFLAGS = $(CFLAGS_DEBUG) $(CFLAGS_OPT) -pipe
 
 
-#all:	digitek_printer digitek_printer_ml digitek_printer_ml_opt
+all:	digitek_printer digitek_printer_ml digitek_printer_ml_opt
 
 digitek_printer_ml:	digitek_printer.ml
 	ocamlc.opt -o $@ unix.cma $<
@@ -19,5 +19,8 @@ digitek_printer:	digitek_printer.c digitek_printer.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f digitek_printer digitek_printer_ml digitek_printer_ml_opt *.cm?
+	rm -f digitek_printer digitek_printer_ml digitek_printer_ml_opt *.cm? *.o
+
+strip:
+	strip digitek_printer digitek_printer_ml_opt
 
