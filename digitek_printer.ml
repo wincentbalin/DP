@@ -154,22 +154,23 @@ let print_data () =
   match delta with
     | 1 -> print_string "Relative measurement.\t"
     | _ -> () ;
-  (* Print AC/DC. *)
-  let ac = Hashtbl.find screen AC
-  and dc = Hashtbl.find screen DC in
-  let acdc =
-  match (ac, dc) with
-    | (1, 0) -> "AC measuting\t"
-    | (0, 1) -> "DC measuting\t"
-    | _ -> "" in
-  print_string acdc;
+  (* Print AC. *)
+  let ac = Hashtbl.find screen AC in
+  match ac with
+    | 1 -> print_string "AC measuring\t"
+    | _ -> () ;
+  (* Print DC. *)
+  let dc = Hashtbl.find screen DC in
+  match dc with
+    | 1 -> print_string "DC measuring\t"
+    | _ -> () ;
   (* Print low battery. *)
   let low_batt= Hashtbl.find screen BATT in
   match low_batt with
     | 1 -> print_string "Low battery!\t"
     | _ -> () ;
-  (* Go to the next line. *)
-  print_char '\n' ;;
+  (* Go to the next line and flush output. *)
+  print_newline () ;;
 
 
 (* Store specified bit in a screen segment. *)
@@ -272,10 +273,19 @@ let process_data data_byte state =
 (* If a key pressed, cancel program. *)
 let cancel_on_key state =
   let buf = " " in
-  let read_chars = Unix.read (Unix.descr_of_in_channel stdin) buf 0 1 in
-  match read_chars with
-    | 1 -> EXIT
-    | _ -> state ;;
+  try
+  (
+    (* Prepare polling on standard input. *)
+    Unix.set_nonblock Unix.stdin ;
+    let read_chars = Unix.read Unix.stdin buf 0 1 in
+    Unix.clear_nonblock Unix.stdin ; 
+    match read_chars with
+      | 1 -> EXIT
+      | _ -> state
+  )
+  with Unix.Unix_error (e, fm, argm) ->
+    if e = Unix.EAGAIN || e = Unix.EWOULDBLOCK then state
+    else EXIT ;;
 
 
 (* Loop which reads data from serial port and prints. *)
@@ -301,12 +311,20 @@ let main () =
     (
       try
       (
-        (* Prepare polling on standard input. *)
-        Unix.set_nonblock (Unix.descr_of_in_channel stdin) ;
         (* Open file and process data. *)
         let port =
           Unix.openfile Sys.argv.(1) [Unix.O_RDONLY; Unix.O_NOCTTY] 0o666 in
-          print_loop port BYTE1 ;
+        let serial_opts = Unix.tcgetattr port in
+        serial_opts.Unix.c_ibaud <- 2400 ;
+	serial_opts.Unix.c_csize <- 8 ;
+	serial_opts.Unix.c_clocal <- true ;
+	serial_opts.Unix.c_cread <- true ;
+	serial_opts.Unix.c_ignpar <- true ;
+	serial_opts.Unix.c_vmin <- 1 ;
+	serial_opts.Unix.c_vtime <- 20 ;
+	Unix.tcflush port Unix.TCIFLUSH ;
+        Unix.tcsetattr port Unix.TCSANOW serial_opts ;
+        print_loop port BYTE1 ;
         Unix.close port
       )
       (* Redo functionality of Unix.handle_unix_error. *)
