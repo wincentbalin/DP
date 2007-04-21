@@ -53,31 +53,34 @@ let segments_to_digit s1 s2 s3 s4 s5 s6 s7 =
     | _ -> 'X' ;;
 
 
+(* Find a segment in screen. *)
+let segment s =
+  Hashtbl.find screen s ;;
+
+
 (* Print digit with given segment bits. *)
 let print_digit sb1 sb2 sb3 sb4 sb5 sb6 sb7 =
-  let s1 = Hashtbl.find screen sb1
-  and s2 = Hashtbl.find screen sb2
-  and s3 = Hashtbl.find screen sb3
-  and s4 = Hashtbl.find screen sb4
-  and s5 = Hashtbl.find screen sb5
-  and s6 = Hashtbl.find screen sb6
-  and s7 = Hashtbl.find screen sb7 in
+  let s1 = segment sb1
+  and s2 = segment sb2
+  and s3 = segment sb3
+  and s4 = segment sb4
+  and s5 = segment sb5
+  and s6 = segment sb6
+  and s7 = segment sb7 in
   let digit = segments_to_digit s1 s2 s3 s4 s5 s6 s7 in
   print_char digit ;;
 
 
 (* Print period if it is there. *)
 let print_period sb =
-  let period = Hashtbl.find screen sb in
-  match period with
-    | 1 -> print_char '.'
-    | _ -> () ;;
+  let period = segment sb in
+  if period = 1 then print_char '.' ;;
 
 
 (* Prints acquired data on screen. *)
 let print_data () =
   (* Print sign if it is there. *)
-  let sign_bit = Hashtbl.find screen SIGN in
+  let sign_bit = segment SIGN in
   let sign = if sign_bit = 1 then '-' else ' ' in
   print_char sign;
   (* Print first digit. *)
@@ -97,84 +100,50 @@ let print_data () =
   (* Print separator. *)
   print_char ' ';
   (* Print multiplier. *)
-  let nano = Hashtbl.find screen NANO
-  and micro = Hashtbl.find screen MICRO
-  and milli = Hashtbl.find screen MILLI
-  and kilo = Hashtbl.find screen KILO
-  and mega = Hashtbl.find screen MEGA in
-  let multiplier =
-  match (nano, micro, milli, kilo, mega) with
-    | (1, 0, 0, 0, 0) -> 'n'
-    | (0, 1, 0, 0, 0) -> 'u'
-    | (0, 0, 1, 0, 0) -> 'm'
-    | (0, 0, 0, 1, 0) -> 'K'
-    | (0, 0, 0, 0, 1) -> 'M'
-    | _ -> ' ' in
-  print_char multiplier;
+  if (segment NANO) = 1 then print_char 'n'
+  else if (segment MICRO) = 1 then print_char 'u'
+  else if (segment MILLI) = 1 then print_char 'm'
+  else if (segment KILO) = 1 then print_char 'K'
+  else if (segment MEGA) = 1 then print_char 'M'
+  else print_char ' ' ;
   (* Print unit. *)
-  let diode = Hashtbl.find screen DIODE
-  and ton = Hashtbl.find screen TON
-  and percent = Hashtbl.find screen PERCENT
-  and farad = Hashtbl.find screen FARAD
-  and ohm = Hashtbl.find screen OHM
-  and volt = Hashtbl.find screen VOLT
-  and ampere = Hashtbl.find screen AMPERE
-  and hertz = Hashtbl.find screen HERTZ
-  and celsius = Hashtbl.find screen CELSIUS
-  and hfe = Hashtbl.find screen HFE in
-  let measuring_unit =
-  match (diode, ton, percent, farad, ohm,
-    volt, ampere, hertz, celsius, hfe) with
-    | (1, 0, 0, 0, 0, 0, 0, 0, 0, 0) -> "Diode"
-    | (0, 1, 0, 0, 0, 0, 0, 0, 0, 0) -> "Ton"
-    | (0, 0, 1, 0, 0, 0, 0, 0, 0, 0) -> "%"
-    | (0, 0, 0, 1, 0, 0, 0, 0, 0, 0) -> "F"
-    | (0, 0, 0, 0, 1, 0, 0, 0, 0, 0) -> "Ohm"
-    | (0, 0, 0, 0, 0, 1, 0, 0, 0, 0) -> "V"
-    | (0, 0, 0, 0, 0, 0, 1, 0, 0, 0) -> "A"
-    | (0, 0, 0, 0, 0, 0, 0, 1, 0, 0) -> "Hz"
-    | (0, 0, 0, 0, 0, 0, 0, 0, 1, 0) -> "°C"
-    | (0, 0, 0, 0, 0, 0, 0, 0, 0, 1) -> "HFE"
-    | _ -> "" in
-  print_string measuring_unit;
+  if (segment DIODE) = 1 then print_string "Diode"
+  else if (segment TON) = 1 then print_string "Ton"
+  else if (segment PERCENT) = 1 then print_string "%"
+  else if (segment FARAD) = 1 then print_string "F"
+  else if (segment OHM) = 1 then print_string "Ohm"
+  else if (segment VOLT) = 1 then print_string "V"
+  else if (segment AMPERE) = 1 then print_string "A"
+  else if (segment HERTZ) = 1 then print_string "Hz"
+  else if (segment CELSIUS) = 1 then print_string "°C"
+  else if (segment HFE) = 1 then print_string "HFE"
+  else print_string " " ;
   (* Print big separator. *)
   print_char '\t';
   (* Print auto-range. *)
-  let autorange = Hashtbl.find screen AUTO in
-  match autorange with
-    | 1 -> print_string "Auto-range\t"
-    | _ -> () ;
+  let autorange = segment AUTO in
+  if autorange = 1 then print_string "Auto-range\t" ;
   (* Print hold. *)
-  let hold = Hashtbl.find screen HOLD in
-  match hold with
-    | 1 -> print_string "Hold\t"
-    | _ -> () ;
+  let hold = segment HOLD in
+  if hold = 1 then print_string "Hold\t" ;
   (* Print relative measurement. *)
-  let delta = Hashtbl.find screen DELTA in
-  match delta with
-    | 1 -> print_string "Relative measurement.\t"
-    | _ -> () ;
+  let delta = segment DELTA in
+  if delta  = 1 then print_string "Relative measurement.\t" ;
   (* Print AC/DC. *)
-  let ac = Hashtbl.find screen AC
-  and dc = Hashtbl.find screen DC in
-  let acdc =
-  match (ac, dc) with
-    | (1, 0) -> "AC measuring\t"
-    | (0, 1) -> "DC measuring\t"
-    | _ -> "" in
-  print_string acdc ;
+  let ac = segment AC
+  and dc = segment DC in
+  if ac = 1 then print_string "AC measuring\t"
+  else if dc = 1 then print_string "DC measuring\t" ;
   (* Print low battery. *)
-  let low_batt= Hashtbl.find screen BATT in
-  match low_batt with
-    | 1 -> print_string "Low battery!\t"
-    | _ -> () ;
+  let low_batt= segment BATT in
+  if low_batt = 1 then print_string "Low battery!\t" ;
   (* Go to the next line and flush output. *)
   print_newline () ;;
 
 
-(* Store specified bit in a screen segment. *)
-let store_bit_in_segment data shift segment =
-  let bit = (data lsr shift) land 1 in
+(* Store specified (little-endian!) bit in a screen segment. *)
+let store_bit_in_segment data bit_position segment =
+  let bit = (data lsr bit_position) land 1 in
   Hashtbl.replace screen segment bit ;;
 
 
@@ -309,7 +278,7 @@ let main () =
       (
         (* Prepare polling on standard input and immediate output. *)
         Unix.set_nonblock Unix.stdin ;
-        Unix.set_nonblock Unix.stdout ; 
+        Unix.set_nonblock Unix.stdout ;
         (* Open file and process data. *)
         let port =
           Unix.openfile Sys.argv.(1) [Unix.O_RDONLY; Unix.O_NOCTTY] 0o666 in
