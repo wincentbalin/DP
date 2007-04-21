@@ -30,7 +30,7 @@ type digitek_screen_segment =
 
 
 (* Variables. *)
-let screen = Hashtbl.create 54;;
+let screen = Hashtbl.create 54 ;;
 
 
 (* Functions. *)
