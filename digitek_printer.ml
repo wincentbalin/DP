@@ -154,16 +154,15 @@ let print_data () =
   match delta with
     | 1 -> print_string "Relative measurement.\t"
     | _ -> () ;
-  (* Print AC. *)
-  let ac = Hashtbl.find screen AC in
-  match ac with
-    | 1 -> print_string "AC measuring\t"
-    | _ -> () ;
-  (* Print DC. *)
-  let dc = Hashtbl.find screen DC in
-  match dc with
-    | 1 -> print_string "DC measuring\t"
-    | _ -> () ;
+  (* Print AC/DC. *)
+  let ac = Hashtbl.find screen AC
+  and dc = Hashtbl.find screen DC in
+  let acdc =
+  match (ac, dc) with
+    | (1, 0) -> "AC measuring\t"
+    | (0, 1) -> "DC measuring\t"
+    | _ -> "" in
+  print_string acdc ;
   (* Print low battery. *)
   let low_batt= Hashtbl.find screen BATT in
   match low_batt with
