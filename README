@@ -3,7 +3,7 @@ the same program in different languages: C and OCaml.
 
 The project is released under the BSD license.
 
-DP reads data sent by a Digitek DT-9062 printer from a specified
+DP reads data sent by a Digitek DT-9062 multimeter from a specified
 (on the command line) serial port, interprets the data and prints it,
 running in a loop. The first key press interrupts the program,
 which closes the serial port and exits then.
